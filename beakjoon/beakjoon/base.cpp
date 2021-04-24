@@ -8,5 +8,5 @@ int main()
 	int n = 0;
 	std::cin >> n;
 
-	std::cout << n << std::endl;
+	std::cout << n << "\n";
 }

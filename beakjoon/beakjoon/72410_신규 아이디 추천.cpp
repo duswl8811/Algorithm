@@ -36,7 +36,7 @@ string solution(string new_id) {
 	for (int i = 1; i < answer.size(); i++)
 	{
 		if (answer[i] == '.')
-			if (answer[i + 1] == '.' || answer[i - 1] == '.')
+			if (answer[i - 1] == '.' || answer[i + 1] == '.')
 				answer.erase(i--, 1);
 	}
 
@@ -53,7 +53,7 @@ string solution(string new_id) {
 
 			if (i == answer.size() - 1)
 			{
-				answer.erase(i, 1);
+				answer.pop_back();
 				--i;
 				continue;
 			}
@@ -83,8 +83,8 @@ string solution(string new_id) {
 		else if (max_size < size)
 		{
 			answer.erase(max_size);
-			if (answer[max_size-1] == '.')
-				answer.erase(max_size-1, 1);
+			if (answer.back() == '.')
+				answer.pop_back();
 			break;
 		}
 		else

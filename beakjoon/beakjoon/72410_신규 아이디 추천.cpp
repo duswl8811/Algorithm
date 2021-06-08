@@ -1,7 +1,7 @@
 // 2021-06-08 16:40 - 19:00		only testcase:5 is no-pass;
-// 2021-06-08 19:30 - 20:15
+// 2021-06-08 19:30 - 20:15		all testcase is pass;
+// 2021-06-08 20:30 - 20:50		fix code
 #include <iostream>
-#include <algorithm>
 #include <string>
 #include <vector>
 
@@ -10,28 +10,29 @@ using namespace std;
 string solution(string new_id) {
 	string answer = new_id;
 	string data = "-_.";
+	const int min_size = 2;
+	const int max_size = 15;
 
-	// "...!@BaT#*..y.abcdefghijklm"	-> "bat.y.abcdefghi"
-	// 1. 대문자 -> 소문자
-	// "...!@BaT#*..y.abcdefghijklm"	-> "...!@bat#*..y.abcdefghijklm"
-	//for (int i = 0; i<answer.size(); i++)
-	//	answer[i] = (char)tolower(answer[i]);
-	transform(answer.begin(), answer.end(), answer.begin(), ::tolower);
-	// 2. 알파벳 소문자, 숫자, 빼기(-), 밑줄(_), 마침표(.)만 허가
-	// "...!@bat#*..y.abcdefghijklm"	-> "...bat..y.abcdefghijklm"
+	// 1. upper -> loewr
+	for (int i = 0; i < answer.size(); i++)
+	{
+		if (isupper(answer[i]))
+			answer[i] = (char)tolower(answer[i]);
+	}
+
+	// 2. able -> lower alpha, digit, '-', '_', '.'
 	for (int i = 0; i < answer.size(); ++i)
 	{
 		if (islower(answer[i]) || isdigit(answer[i]) || data.find(answer[i]) != string::npos)
 			continue;
-
 		else
 		{
 			answer.erase(i, 1);
 			--i;
 		}
 	}
+
 	// 3. ".." -> "."
-	// "...bat..y.abcdefghijklm"		-> ".bat.y.abcdefghijklm"
 	for (int i = 1; i < answer.size(); i++)
 	{
 		if (answer[i] == '.')
@@ -40,7 +41,6 @@ string solution(string new_id) {
 	}
 
 	// 4. front & back != '.'
-	// ".bat.y.abcdefghijklm"			-> "bat.y.abcdefghijklm"
 	for (int i = 0; i < answer.size();)
 	{
 		if (answer[i] == '.')
@@ -57,97 +57,34 @@ string solution(string new_id) {
 				--i;
 				continue;
 			}
+
 			++i;
 		}
 		else
 			++i;
 	}
 
-	// 5. front == '\0' -> front = 'a'
-	// no change 
-
-
-	// 6. if 15 < size() then next delete
-	// "bat.y.abcdefghijklm"			-> "bat.y.abcdefghi"
-
-
-	// 7. if size() < 3 then back + back until 3 == size() 
-	// no change 
-
-
-	// 1 ~ 4
-	//for(int i = 0; i < answer.size();)
-	//{
-	//	if (isalpha(answer[i]))
-	//	{
-	//		answer[i] = (char)tolower(answer[i]);
-	//		++i;
-	//		continue;
-	//	}
-
-	//	if (isdigit(answer[i]))
-	//	{
-	//		++i;
-	//		continue;
-	//	}
-
-	//	//string::size_type n;
-	//	if (answer[i] == '.')
-	//	{
-	//		if (i == 0)
-	//		{
-	//			answer.erase(i, 1);
-	//			continue;
-	//		}
-
-	//		if (answer[i + 1] == '.' || answer[i - 1] == '.')
-	//		{
-	//			answer.erase(i--, 1);
-	//			if (i == answer.size())
-	//			{
-	//				--i;
-	//				continue;
-	//			}
-	//		}
-	//		
-	//		if (i == answer.size() - 1)
-	//		{
-	//			answer.erase(i--, 1);
-	//		}
-	//		++i;
-	//		continue;
-	//	}
-
-	//	if (data.find(answer[i]) == string::npos)
-	//	{
-	//		answer.erase(i, 1);
-	//		if (answer[i] == '\0')
-	//			--i;
-	//		continue;
-	//	}
-
-	//	i++;
-	//}
-
-	// 5 ~ 7
 	for (;;)
 	{
 		int size = answer.size();
 
+		// 5. front == '\0' -> front = 'a'
 		if (!size)
 		{
 			answer.push_back('a');
 			continue;
 		}
-		else if (size <= 2)
+		// 7. if size() < 3 then back + back until 3 == size() 
+		else if (size <= min_size)
 		{
 			answer.push_back(answer.back());
 		}
-		else if (15 < size)
+		// 6. if 15 < size() then next delete
+		else if (max_size < size)
 		{
-			answer.erase(15);
-			if (answer[14] == '.')
-				answer.erase(14, 1);
+			answer.erase(max_size);
+			if (answer[max_size-1] == '.')
+				answer.erase(max_size-1, 1);
 			break;
 		}
 		else
